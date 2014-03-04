@@ -24,7 +24,7 @@
         _results = [];
         for (_i = 0, _len = snakes.length; _i < _len; _i++) {
           snake = snakes[_i];
-          context.fillStyle = snake.id === id ? 'rgb(170,0,0)' : 'rgb(0,0,0)';
+          context.fillStyle = snake.color;
           if (snake.id === id) {
             $("#kills").html("Kills: " + snake.kills);
             $("#deaths").html("Deaths: " + snake.deaths);
@@ -48,29 +48,15 @@
         server =  io.connect("http://localhost", {
           'port': 5000
         });
-        server.on("id", function(event) {
-		id = event.value;
-	});
+//        server.on("id", function(event) {
+//		id = event.value;
+//	});
 	server.on("snakes", function(event) {
 		animate(event.value);
 	});
       };
       connect();
-      return $(document).keydown(function(event) {
-        var key;
-        key = event.keyCode ? event.keyCode : event.which;
-        switch (key) {
-          case 37:
-            return sendDirection("left");
-          case 38:
-            return sendDirection("up");
-          case 39:
-            return sendDirection("right");
-          case 40:
-            return sendDirection("down");
-        }
-      });
-    });
+  });
   } else {
     alert("Your browser does not support websockets.");
   }

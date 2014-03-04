@@ -52,7 +52,9 @@
   server.listen(port = Number(process.env.PORT || PORT));
   /* Snake Class */
   Snake = (function() {
-    function Snake(id) {
+    function Snake(id, name, color) {
+      this.name = name;
+      this.color = color;
       this.id = id;
       this.reset();
       this.kills = 0;
@@ -150,20 +152,24 @@
   socket = io.listen(server);
   socket.on("connection", function(client) {
     var clientId, clientSnake;
-    clientId = autoClient;
-    clientSnake = new Snake(clientId);
-    autoClient += 1;
-    snakes.push(clientSnake);
-    sys.puts("Client " + clientId + " connected");
-    client.emit("id", {
-      type: 'id',
-      value: clientId
+    client.on("start", function(data) {
+        clientId = autoClient;
+        clientSnake = new Snake(clientId, data.name, data.color);
+        autoClient += 1;
+        snakes.push(clientSnake);
+        sys.puts("Client " + clientId + " connected");
+        client.emit("id", {
+          type: 'id',
+          value: clientId
+        });
     });
     client.on("direction", function(message) {
-      return clientSnake.direction = message.direction;
+      return clientSnake.direction = message;
     });
     return client.on("disconnect", function() {
-      snakes.remove(clientSnake);
+      if (clientSnake) {
+          snakes.remove(clientSnake);
+      }
       return sys.puts("Client " + clientId + " disconnected");
     });
   });
