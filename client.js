@@ -25,10 +25,7 @@
         for (_i = 0, _len = snakes.length; _i < _len; _i++) {
           snake = snakes[_i];
           context.fillStyle = snake.color;
-          if (snake.id === id) {
-            $("#kills").html("Kills: " + snake.kills);
-            $("#deaths").html("Deaths: " + snake.deaths);
-          }
+          $("#snake_" + snake.id).html(snake.name + ": Kills: " + snake.kills + " Deaths: " + snake.deaths);
           _results.push((function() {
             var _j, _len2, _ref, _results2;
             _ref = snake.elements;
@@ -51,6 +48,16 @@
 //        server.on("id", function(event) {
 //		id = event.value;
 //	});
+    server.on("snakeAdded", function(event) {
+        snakeDiv = document.createElement( "div" )
+        $(snakeDiv).attr('id', "snake_" + event.id);
+        $("#scoreboard").append(snakeDiv);
+    });
+
+    server.on("snakeRemoved", function(event) {
+        $("#snake_" + event.id ).remove();
+    });
+
 	server.on("snakes", function(event) {
 		animate(event.value);
 	});

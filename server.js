@@ -159,8 +159,11 @@
         snakes.push(clientSnake);
         sys.puts("Client " + clientId + " connected");
         client.emit("id", {
-          type: 'id',
-          value: clientId
+          "id": clientId,
+        });
+        socket.sockets.emit("snakeAdded", {
+            "id": clientId,
+            "name": data.name
         });
     });
     client.on("direction", function(message) {
@@ -170,6 +173,7 @@
       if (clientSnake) {
           snakes.remove(clientSnake);
       }
+      socket.sockets.emit("snakeRemoved", {"id": clientId});
       return sys.puts("Client " + clientId + " disconnected");
     });
   });
